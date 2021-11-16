@@ -27,8 +27,8 @@ object Parallel {
             }
             .collectAll
             .flatMap(secondStep)
-
       }
+
     firstStepResult.flatMap(secondStep).map(_.head)
   }
 
