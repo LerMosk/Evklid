@@ -26,6 +26,7 @@ object Parallel {
               case Seq(v1)     => Future.value(v1)
             }
             .collectAll
+            .flatMap(secondStep)
 
       }
     firstStepResult.flatMap(secondStep).map(_.head)
