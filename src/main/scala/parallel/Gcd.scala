@@ -6,8 +6,7 @@ import parallel.FpPoly.DivisionResult
 import java.util.concurrent.Executors
 import scala.annotation.tailrec
 
-object Gcd {
-  val print: Boolean = false
+case class Gcd(printCalculations: Boolean) {
   case class Result(gcd: FpPoly, x: FpPoly, y: FpPoly)
 
   private val pool: FuturePool = FuturePool(Executors.newFixedThreadPool(3))
@@ -65,8 +64,8 @@ object Gcd {
   }
 
   def printHead(): Unit =
-    if (print) println(f"\n${"q"}%30s ${"x"}%30s ${"y"}%30s ${"v"}%30s")
+    if (printCalculations) println(f"\n${"q"}%30s ${"x"}%30s ${"y"}%30s ${"v"}%30s")
 
   def print(q: FpPoly, x: FpPoly, y: FpPoly, v: FpPoly): Unit =
-    if (print) println(f"${q.toString}%30s ${x.toString}%30s ${y.toString}%30s ${v.toString}%30s")
+    if (printCalculations) println(f"${q.toString}%30s ${x.toString}%30s ${y.toString}%30s ${v.toString}%30s")
 }

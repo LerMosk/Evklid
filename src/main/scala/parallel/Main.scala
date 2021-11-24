@@ -14,16 +14,26 @@ object Main extends App {
   println("Calculate gcd for:")
   println(s"p = $p")
   polys.zipWithIndex.foreach { case (poly, i) => println(s"p$i = $poly") }
+
+  val gcd: (FpPoly, FpPoly) => FpPoly = Gcd(printCalculations = false).gcdSeq(_, _).gcd
+
   println("Sequential algorithm")
   withCalkTime {
     val result = polys
-      .reduceOption((v1, v2) => Gcd.gcdSeq(v1, v2).gcd)
+      .reduceOption(gcd)
       .getOrElse(throw new IllegalArgumentException("polys is empty"))
     println(result)
   }
-  println("Parallel algorithm")
+
+  println("Parallel algorithm CPU")
   withCalkTime {
-    val result = Await.result(Parallel.calc(threads, polys)((v1, v2) => Gcd.gcdSeq(v1, v2).gcd))
+    val result = Await.result(Parallel.calcCPU(threads, polys)(gcd))
+    println(result)
+  }
+
+  println("Parallel algorithm GPU")
+  withCalkTime {
+    val result = Parallel.calcGPU(threads, polys)(gcd)
     println(result)
   }
 

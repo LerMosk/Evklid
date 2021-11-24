@@ -1,6 +1,12 @@
 package parallel
 
+import com.twitter.util.Future
+
 object Utils {
+  implicit class CollectableFuture[A](v: Iterator[Future[A]]) {
+    def collectAll: Future[Seq[A]] = Future.collect(v.toSeq)
+  }
+
   def power(x0: Int, y0: Int, p: Int): Int = {
     var res: Int = 1 // Initialize result
 
