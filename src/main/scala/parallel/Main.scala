@@ -4,9 +4,9 @@ import com.twitter.util.Await
 
 object Main extends App {
   val p         = 997
-  val polyCount = 10000
+  val polyCount = 1000
   val threads   = 4
-  val maxDeg    = 500
+  val maxDeg    = 6
 
   val common = FpPoly(p, coeffs = 1, 94, 61, 5, 111, 4)
   println(s"gcd = $common")
@@ -25,15 +25,9 @@ object Main extends App {
     println(result)
   }
 
-  println("Parallel algorithm CPU")
+  println("Parallel algorithm")
   withCalkTime {
-    val result = Await.result(Parallel.calcCPU(threads, polys)(gcd))
-    println(result)
-  }
-
-  println("Parallel algorithm GPU")
-  withCalkTime {
-    val result = Parallel.calcGPU(threads, polys)(gcd)
+    val result = Await.result(Parallel.calc(threads, polys)(gcd))
     println(result)
   }
 
