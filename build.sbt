@@ -6,6 +6,6 @@ scalaVersion := "2.13.6"
 
 libraryDependencies ++= Seq(
   "com.twitter" %% "util-core" % "21.9.0",
-  "com.aparapi"  % "aparapi"   % "2.0.0",
-  "com.aparapi"  % "aparapi-jni"   % "1.4.3"
+  "com.aparapi" % "aparapi" % "3.0.0",
+  "com.aparapi" % "aparapi-jni" % "1.4.3"
 )

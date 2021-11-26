@@ -1,6 +1,6 @@
 package parallel
 
-import GPU.GpuOperations
+import GPU.{GpuOperations, GpuOperations2}
 import parallel.FpPoly._
 import parallel.Utils.power
 
@@ -12,19 +12,19 @@ class FpPoly private(val p: Int, val coeffs: Seq[Int]) extends Comparable[FpPoly
   def +(other: FpPoly): FpPoly = {
     require(other.p == p, s"p is not equal: $this and $other")
     val (first, second) = zip(coeffs, other.coeffs).unzip
-    val res = GpuOperations.plus(first.toArray, second.toArray, p).toSeq
+    val res = gpu.plus(first.toArray, second.toArray, p).toSeq
     fpPoly(res)
   }
 
   def -(other: FpPoly): FpPoly = {
     require(other.p == p, s"p is not equal: $this and $other")
     val (first, second) = zip(coeffs, other.coeffs).unzip
-    val res = GpuOperations.minus(first.toArray, second.toArray, p).toSeq
+    val res = gpu.minus(first.toArray, second.toArray, p).toSeq
     fpPoly(res)
   }
 
   def *(i: Int): FpPoly = {
-    val res = GpuOperations.prod(coeffs.toArray, i, p).toSeq
+    val res = gpu.prod(coeffs.toArray, i, p).toSeq
     fpPoly(res)
   }
 
@@ -120,6 +120,8 @@ object FpPoly {
   }
 
   case class DivisionResult(remain: FpPoly, div: FpPoly)
+
+  val gpu = new GpuOperations2()
 }
 
 

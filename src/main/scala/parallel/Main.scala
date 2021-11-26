@@ -4,11 +4,11 @@ import com.twitter.util.Await
 
 object Main extends App {
   val p         = 997
-  val polyCount = 1000
+  val polyCount = 100
   val threads   = 4
-  val maxDeg    = 6
+  val maxDeg    = 3
 
-  val common = FpPoly(p, coeffs = 1, 94, 61, 5, 111, 4)
+  val common = FpPoly(p, coeffs = 1, 94, 61)
   println(s"gcd = $common")
   val polys = Seq.fill(polyCount)(FpPoly.gen(p, maxDeg) * common)
   println("Calculate gcd for:")
