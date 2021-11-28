@@ -31,7 +31,7 @@ class FpPoly private(val p: Int, val coeffs: Seq[Int]) extends Comparable[FpPoly
   def *(other: FpPoly): FpPoly = {
     require(other.p == p, s"p is not equal: $this and $other")
     val res = GpuOperations
-      .prod(coeffs.toArray, other.coeffs.reverse.toArray, p)
+      .prod(coeffs.toArray, other.coeffs.toArray, p)
       .map(arr => fpPoly(arr.toSeq))
     res.reduceLeft(_ + _)
   }
