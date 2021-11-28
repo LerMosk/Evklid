@@ -9,22 +9,19 @@ import scala.util.Random
 
 class FpPoly private(val p: Int, val coeffs: Seq[Int]) extends Comparable[FpPoly] {
 
-  def +(other: FpPoly): FpPoly = {
-    require(other.p == p, s"p is not equal: $this and $other")
-    val (first, second) = zip(coeffs, other.coeffs).unzip
-    val res = GpuOperations.plus(first.toArray, second.toArray, p).toSeq
-    fpPoly(res)
-  }
+  def +(other: FpPoly): FpPoly =
+    bitwiseOperation(other) { (i1, i2) =>
+      (i1 + i2) % p
+    }
 
-  def -(other: FpPoly): FpPoly = {
-    require(other.p == p, s"p is not equal: $this and $other")
-    val (first, second) = zip(coeffs, other.coeffs).unzip
-    val res = GpuOperations.minus(first.toArray, second.toArray, p).toSeq
-    fpPoly(res)
-  }
+  def -(other: FpPoly): FpPoly =
+    bitwiseOperation(other) { (i1, i2) =>
+      val v = (i1 - i2) % p
+      if (v < 0) v + p else v
+    }
 
   def *(i: Int): FpPoly = {
-    val res = GpuOperations.prod(coeffs.toArray, i, p).toSeq
+    val res = coeffs.map(v => (i * v) % p)
     fpPoly(res)
   }
 
@@ -86,6 +83,15 @@ class FpPoly private(val p: Int, val coeffs: Seq[Int]) extends Comparable[FpPoly
     } else this
 
   override def toString: String = s"[${coeffs.mkString(", ")}]"
+
+  def bitwiseOperation(other: FpPoly)(f: (Int, Int) => Int): FpPoly = {
+    require(other.p == p, s"p is not equal: $this and $other")
+    val res = zip(coeffs, other.coeffs)
+    val res2 = res.map {
+      case (i1, i2) => f(i1, i2)
+    }
+    fpPoly(res2)
+  }
 
   def compareTo(t: FpPoly): Int = {
     @tailrec
